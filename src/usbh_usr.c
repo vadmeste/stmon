@@ -69,7 +69,10 @@
 * @{
 */ 
 extern USB_OTG_CORE_HANDLE          USB_OTG_Core;
+extern USBH_HOST USB_Host;
 extern CircularBuffer g_LogCB;
+extern uint32_t g_dma_enable;
+extern uint32_t g_init_usb_core;
 /**
 * @}
 */ 
@@ -486,10 +489,12 @@ int USBH_USR_MSC_Application(void)
     // {
       // LCD_ErrLog((void *)MSG_WR_PROTECT);
     // }
-      while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
+      while(g_init_usb_core < 2 && (HCD_IsDeviceConnected(&USB_OTG_Core)) && \
               (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
+    	  USB_OTG_BSP_mDelay(100);
           Toggle_Leds();
+          Routine_MEMS();
       } 
  
     USBH_USR_ApplicationState = USH_USR_FS_DRAW;
@@ -590,7 +595,26 @@ int USBH_USR_MSC_Application(void)
         return(-1);
       }
       Image_Browser("0:/");
-      USBH_USR_ApplicationState = USH_USR_FS_WRITEFILE;
+      // USB_OTG_BSP_mDelay(2000);
+      if (g_dma_enable == 1) {
+	      LCD_DrawFullRect(0, 0, 240, 320);
+	      USB_OTG_BSP_mDelay(100);
+	      LCD_DisplayStringLine(LCD_LINE_14, "> Disabling USB DMA\n");
+	      LCD_DisplayStringLine(LCD_LINE_15, "> Continuing after two seconds\n");
+	      // USB_OTG_BSP_mDelay(2000);
+	     
+	      USBH_DeInit(&USB_OTG_Core, &USB_Host);
+	      USBH_USR_ApplicationState = USH_USR_FS_INIT;
+	      g_dma_enable = 0;
+	      USBH_Init(&USB_OTG_Core, 
+				 USB_OTG_HS_CORE_ID,
+				 &USB_Host,
+				 &USBH_MSC_cb, 
+				 &USR_cb); 
+
+      } else {
+	      USBH_USR_ApplicationState = USH_USR_FS_WRITEFILE;
+      }
       return (0);
     }
     break;
@@ -711,16 +735,15 @@ uint8_t Image_Browser (char* path)
         {
           res = f_open(&file, fn, FA_OPEN_EXISTING | FA_READ);
           Show_Image();
-          USB_OTG_BSP_mDelay(2000);
+          // USB_OTG_BSP_mDelay(2000);
           ret = 0;
-          /* while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
+          while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
             ( STM_EVAL_PBGetState (BUTTON_USER) != SET  ))
           {
             Toggle_Leds();
-          } */
+          } 
           f_close(&file);
-          break;
-          
+	  break;
         }
       }
     }  

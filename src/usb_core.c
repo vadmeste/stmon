@@ -30,6 +30,9 @@
 #include "usb_bsp.h"
 
 
+
+extern uint32_t g_dma_enable;
+
 /** @addtogroup USB_OTG_DRIVER
 * @{
 */
@@ -265,7 +268,7 @@ USB_OTG_STS USB_OTG_SelectCore(USB_OTG_CORE_HANDLE *pdev,
 #endif      
     
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED    
-    pdev->cfg.dma_enable       = 1;    
+    pdev->cfg.dma_enable       = g_dma_enable;    
 #endif
     
 #ifdef USB_OTG_HS_SOF_OUTPUT_ENABLED    

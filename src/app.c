@@ -38,6 +38,8 @@
 
 #include "cbuf.h"
 #include "stm32f4xx_rcc.h" 
+
+#include "mems.h"
    
 ErrorStatus HSEStartUpStatus; 
 
@@ -136,6 +138,9 @@ __IO uint32_t   uwPeriodValue = 0;
 
 CircularBuffer g_LogCB;
 short st_subsecond;
+
+uint32_t g_dma_enable;
+uint32_t g_init_usb_core;
 
 extern uint8_t Image_Browser (char* path);  
 
@@ -578,14 +583,11 @@ NVIC_InitTypeDef NVIC_SPIInitStructure;
 
 void EnableAllSPIInterrupt() {
 
-
     NVIC_SPIInitStructure.NVIC_IRQChannel = SPI5_IRQn;
     NVIC_SPIInitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_SPIInitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_SPIInitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_SPIInitStructure); 
-
-
 }
 
 
@@ -774,33 +776,38 @@ int main(void)
   To reconfigure the default setting of SystemInit() function, refer to
   system_stm32fxxx.c file
   */  
- 
-//  SysTick_Config(SystemCoreClock / 100);
 
-  
 //  if (RTC_ReadBackupRegister(RTC_BKP_DR0) != 0x32F2)
 //  {
-     RTC_Config();
-     RTC_TimeRegulate();
+    RTC_Config();
+    RTC_TimeRegulate();
 //  }
 
+
      SDRAM_Init();
-     cbInit(&g_LogCB, 0xD0000000 + 0x40000, 0x200000);
+     cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
      log_append("Start application\n");
   
+     
      EnableDMA2DInterrupt();
      NVIC_SetPriority(DMA2D_IRQn, 0);
      NVIC_EnableIRQ(DMA2D_IRQn);
      DMA2D_ITConfig(DMA2D_IT_TC, ENABLE);
 
+/*
      EnableAllDMA();
 
      EnableFlashInterrupt();
      FLASH_ITConfig(FLASH_IT_EOP, ENABLE);
-
+     
      EnableAllSPIInterrupt();
-     SPI_I2S_ITConfig(SPI5, SPI_I2S_IT_TXE, ENABLE);
+     SPI_I2S_ITConfig(SPI5, SPI_I2S_IT_TXE, ENABLE); 
+*/
 
+     g_dma_enable = 1;
+     g_init_usb_core = 0;
+
+     g_init_usb_core++;
      USBH_Init(&USB_OTG_Core, 
            USB_OTG_HS_CORE_ID,
             &USB_Host,
@@ -808,24 +815,41 @@ int main(void)
             &USR_cb); 
 
 
-     uint16_t bytesWritten, bytesToWrite;
-     FRESULT res;
-
+     InitMEMS(); 
+     
      STM_EVAL_LEDInit(LED3); 
      STM_EVAL_LEDInit(LED4);
+
+
+     SysTick_Config(SystemCoreClock / 1000);
+
 
      while (1)
      {
          /* Host Task handler */
          USBH_Process(&USB_OTG_Core, &USB_Host);
+	 Routine_MEMS();
+	 Delay(5);
+	 log_append("Idle mode\n");
+         __WFI(); 
 
-         if (i++ == 0x100000)
+         if ( 0 /* i++ == 0x1000* */ )
          {
              STM_EVAL_LEDToggle(LED3);
-             STM_EVAL_LEDToggle(LED4);
-             i = 0;
-             log_append("-\n");
+	     i = 0;
+             // log_append("-\n");
+	     // Routine_MEMS();
          } 
+
+//	 if (g_dma_enable != 1 && g_init_usb_core < 2) {
+//		 g_init_usb_core++;
+/*		 USBH_Init(&USB_OTG_Core, 
+				 USB_OTG_HS_CORE_ID,
+				 &USB_Host,
+				 &USBH_MSC_cb, 
+				 &USR_cb); */
+//	 }
+
      }
 
 // Serial port (ttyACM0)
@@ -840,10 +864,6 @@ int main(void)
             &USBD_CDC_cb, 
             &USR_cb);
 */
-
-  /* Main loop */
-     while (1) {
-     }
 
 } 
 

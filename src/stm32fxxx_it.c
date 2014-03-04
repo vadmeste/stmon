@@ -204,7 +204,7 @@ void OTG_HS_IRQHandler(void)
   USBH_OTG_ISR_Handler(&USB_OTG_Core);
 }
 
-void generic_dma_handler() {
+void generic_dma_handler(void) {
     log_append("DMA_activity\n");
 }
 
@@ -258,18 +258,14 @@ void   DMA2_Stream7_IRQHandler(void){
     generic_dma_handler();
 }
 
-extern short st_subsecond = 0;
-
 void SysTick_Handler(void)
 {
-    st_subsecond++;
-    if (st_subsecond > 99)
-        st_subsecond = 0;
+	// STM_EVAL_LEDToggle(LED3);
+	// log_append("Timer INTR\n");
+	TimingDelay_Decrement();
 }
     
 void DMA2D_IRQHandler(void) {
-
-    // msg("DMA2D received IRQ interrupt");
 
     if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
     {
