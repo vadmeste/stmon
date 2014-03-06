@@ -1117,11 +1117,11 @@ void LCD_DrawFullRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Hei
   
   /* Start Transfer */ 
   DMA2D_StartTransfer();
-  
+
   /* Wait for CTC Flag activation */
-  // while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET)
-  // {
-  // } 
+  /* while(DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET)
+  {
+  } */
 
   LCD_SetTextColor(CurrentTextColor);
 }

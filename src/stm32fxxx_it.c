@@ -267,11 +267,11 @@ void SysTick_Handler(void)
     
 void DMA2D_IRQHandler(void) {
 
-    if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
+   if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
     {
         log_append("DMA2D_completed\n");
         DMA2D_ClearITPendingBit(DMA2D_IT_TC);
-    }
+    } 
 
 }
 

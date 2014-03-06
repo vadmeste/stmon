@@ -597,12 +597,12 @@ int USBH_USR_MSC_Application(void)
       Image_Browser("0:/");
       // USB_OTG_BSP_mDelay(2000);
       if (g_dma_enable == 1) {
-	      LCD_DrawFullRect(0, 0, 240, 320);
+	      USB_OTG_BSP_mDelay(100);
+	      // LCD_DrawFullRect(0, 0, 240, 320);
 	      USB_OTG_BSP_mDelay(100);
 	      LCD_DisplayStringLine(LCD_LINE_14, "> Disabling USB DMA\n");
 	      LCD_DisplayStringLine(LCD_LINE_15, "> Continuing after two seconds\n");
-	      // USB_OTG_BSP_mDelay(2000);
-	     
+	      USB_OTG_BSP_mDelay(100);
 	      USBH_DeInit(&USB_OTG_Core, &USB_Host);
 	      USBH_USR_ApplicationState = USH_USR_FS_INIT;
 	      g_dma_enable = 0;
