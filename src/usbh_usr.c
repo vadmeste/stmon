@@ -497,7 +497,7 @@ int USBH_USR_MSC_Application(void)
     // {
       // LCD_ErrLog((void *)MSG_WR_PROTECT);
     // }
-      while(/* g_init_usb_core < 2 && */ ! (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
+      while(/* g_init_usb_core < 2 && */ (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
              (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
     	  USB_OTG_BSP_mDelay(100);
