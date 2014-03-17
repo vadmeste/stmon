@@ -268,7 +268,7 @@ USB_OTG_STS USB_OTG_SelectCore(USB_OTG_CORE_HANDLE *pdev,
 #endif      
     
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED    
-    pdev->cfg.dma_enable       = g_dma_enable;    
+    pdev->cfg.dma_enable       = 1;    
 #endif
     
 #ifdef USB_OTG_HS_SOF_OUTPUT_ENABLED    

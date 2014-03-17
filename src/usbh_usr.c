@@ -35,6 +35,12 @@
 #include "usbh_msc_bot.h"
 #include "cbuf.h"
 
+#include "global_includes.h"
+#include "Global.h"
+#include "GUI_Type.h"
+#include "GUI.h"
+#include "GUI_JPEG_Private.h"
+
 /** @addtogroup USBH_USER
 * @{
 */
@@ -86,6 +92,7 @@ uint8_t filenameString[15]  = {0};
 
 FATFS fatfs;
 FIL file;
+FIL Video_File;
 uint8_t Image_Buf[IMAGE_BUFFER_SIZE];
 uint8_t line_idx = 0;   
 uint32_t BytesRead = 0;
@@ -183,25 +190,27 @@ void USBH_USR_Init(void)
     STM_EVAL_LEDInit(LED4); 
     
     STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_GPIO);
+
+    LCD_ClassicInit();
        
     /* Initialize the LCD */
-    LCD_Init();
-    LCD_LayerInit();
+    // LCD_Init();
+    // LCD_LayerInit();
     
     /* Set LCD background layer */
-    LCD_SetLayer(LCD_BACKGROUND_LAYER);
+    // LCD_SetLayer(LCD_BACKGROUND_LAYER);
     
     /* Set LCD transparency */
-    LCD_SetTransparency(0);
+    // LCD_SetTransparency(0);
     
     /* Set LCD foreground layer */
-    LCD_SetLayer(LCD_FOREGROUND_LAYER);
+    // LCD_SetLayer(LCD_FOREGROUND_LAYER);
     
     /* LTDC reload configuration */  
-    LTDC_ReloadConfig(LTDC_IMReload);
+    // LTDC_ReloadConfig(LTDC_IMReload);
     
     /* Enable the LTDC */
-    LTDC_Cmd(ENABLE);
+    // LTDC_Cmd(ENABLE);
     
     /* LCD Log initialization */
     LCD_LOG_Init(); 
@@ -461,14 +470,13 @@ void USBH_USR_OverCurrentDetected (void)
 int USBH_USR_MSC_Application(void)
 {
   FRESULT res;
-  uint8_t writeTextBuff[] = "BIG_MANTA FS/HS STM32 Connectivity line Host Demo application using FAT_FS   ";
   uint16_t bytesWritten, bytesToWrite;
   
   /* Set LCD Layer size and pixel format */
-  LTDC_LayerPixelFormat(LTDC_Layer2, LTDC_Pixelformat_RGB565); 
-  LTDC_LayerSize(LTDC_Layer2, 240, 320);
+  // LTDC_LayerPixelFormat(LTDC_Layer2, LTDC_Pixelformat_RGB565); 
+  // LTDC_LayerSize(LTDC_Layer2, 240, 320);
   /* LTDC reload configuration */  
-  LTDC_ReloadConfig(LTDC_IMReload);
+  // LTDC_ReloadConfig(LTDC_IMReload);
   
   switch(USBH_USR_ApplicationState)
   {
@@ -489,15 +497,38 @@ int USBH_USR_MSC_Application(void)
     // {
       // LCD_ErrLog((void *)MSG_WR_PROTECT);
     // }
-      while(g_init_usb_core < 2 && (HCD_IsDeviceConnected(&USB_OTG_Core)) && \
-              (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
+      while(/* g_init_usb_core < 2 && */ ! (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
+             (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
     	  USB_OTG_BSP_mDelay(100);
           Toggle_Leds();
-          Routine_MEMS();
+          // Routine_MEMS();
       } 
  
     USBH_USR_ApplicationState = USH_USR_FS_DRAW;
+    break;
+  
+  case USH_USR_FS_READVIDEO:
+
+
+    LCD_X_DisplayDriver(1, LCD_X_INITCONTROLLER, NULL);
+    GUI_Init();
+    GUI_SelectLayer(1);  
+
+    GUI_DispStringAt("> Video Player\n", 15, 20);
+
+    f_mount(0, &fatfs);
+    int res = f_open(&Video_File, "0:21.mov", FA_OPEN_EXISTING | FA_READ);
+    if (res == FR_OK) {
+	    while(_PlayMJPEG(&Video_File) >= 0)
+		    ;
+    }
+    f_mount(0, NULL); 
+   /* LCD_X_SETVIS_INFO lx_info;
+    lx_info.OnOff = DISABLE;
+    LCD_X_DisplayDriver(1, LCD_X_SETVIS, &lx_info); */
+
+    USBH_USR_ApplicationState = USH_USR_FS_WRITEFILE;
     break;
     
   case USH_USR_FS_READLIST:
@@ -511,6 +542,12 @@ int USBH_USR_MSC_Application(void)
     
   case USH_USR_FS_WRITEFILE:
     
+//    LCD_DeInit();
+//    LCD_ClassicInit();
+    // LCD_LOG_Init();
+
+    USB_OTG_BSP_mDelay(100);
+
     /*Key B3 in polling*/
 /*    while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
        (STM_EVAL_PBGetState (BUTTON_USER) != RESET) )          
@@ -518,12 +555,13 @@ int USBH_USR_MSC_Application(void)
       Toggle_Leds();
     } */
     /* Writes a text file, STM32.TXT in the disk*/
-    LCD_DrawFullRect(0, 0, 240, 320);
+    // LCD_DrawFullRect(0, 0, 240, 320);
 
     USB_OTG_BSP_mDelay(100);
 
-    LCD_DisplayStringLine(LCD_LINE_14, "> Saving log..\n");
-    
+    GUI_DispStringAt("> Saving log....\n", 15, 220);
+    // LCD_DisplayStringLine(LCD_LINE_14, "> Saving log..\n");
+
     if(USBH_MSC_Param.MSWriteProtect == DISK_WRITE_PROTECTED)
     {
       
@@ -565,7 +603,8 @@ int USBH_USR_MSC_Application(void)
       // LCD_UsrLog ("> STM32.TXT created in the disk\n");
     }
 
-    LCD_DisplayStringLine(LCD_LINE_15, "> Finished.\n");
+    // LCD_DisplayStringLine(LCD_LINE_15, "> Finished.\n");
+    GUI_DispStringAt("> Finished\n", 15, 230);
     USBH_USR_ApplicationState = USH_USR_FS_NOTHING; 
     
     // LCD_SetTextColor(Green);
@@ -589,14 +628,14 @@ int USBH_USR_MSC_Application(void)
   */
     while(HCD_IsDeviceConnected(&USB_OTG_Core))
     {
-      if ( f_mount( 0, &fatfs ) != FR_OK ) 
+	    if ( f_mount( 0, &fatfs ) != FR_OK ) 
       {
         /* fat_fs initialisation fails*/
         return(-1);
       }
       Image_Browser("0:/");
       // USB_OTG_BSP_mDelay(2000);
-      if (g_dma_enable == 1) {
+      /* if (g_dma_enable == 1) {
 	      USB_OTG_BSP_mDelay(100);
 	      // LCD_DrawFullRect(0, 0, 240, 320);
 	      USB_OTG_BSP_mDelay(100);
@@ -614,7 +653,11 @@ int USBH_USR_MSC_Application(void)
 
       } else {
 	      USBH_USR_ApplicationState = USH_USR_FS_WRITEFILE;
-      }
+      } */
+      
+      LCD_DisplayStringLine(LCD_LINE_15, "> Press User button to continue..\n");
+
+      USBH_USR_ApplicationState = USH_USR_FS_READVIDEO;
       return (0);
     }
     break;

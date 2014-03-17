@@ -211,6 +211,11 @@ typedef enum
   * @}
   */
 
+#ifndef I2C_SPEED
+ #define I2C_SPEED                        100000
+#endif /* I2C_SPEED */
+
+
 /** @defgroup STM32F429I_DISCOVERY_LOW_LEVEL_Exported_Macros
   * @{
   */

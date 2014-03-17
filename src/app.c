@@ -40,7 +40,15 @@
 #include "stm32f4xx_rcc.h" 
 
 #include "mems.h"
-   
+
+#include "global_includes.h"
+#include "Global.h"
+#include "GUI_Type.h"
+#include "GUI.h"
+#include "GUI_JPEG_Private.h"
+#include "string.h"
+
+  
 ErrorStatus HSEStartUpStatus; 
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -525,6 +533,9 @@ static void log_append_datetime(Table_TypeDef table, uint8_t max_idx )
 
 }
 
+void _log_append(char* buf) {
+}
+
 void log_append(char* buf) {
     
     int i = 0;
@@ -770,7 +781,8 @@ int main(void)
 {
   __IO uint32_t i = 0;  
 
-  /*!< At this stage the microcontroller clock setting is already configured, 
+
+    /*!< At this stage the microcontroller clock setting is already configured, 
   this is done through SystemInit() function which is called from startup
   file (startup_stm32fxxx_xx.s) before to branch to application main.
   To reconfigure the default setting of SystemInit() function, refer to
@@ -782,18 +794,55 @@ int main(void)
     RTC_Config();
     RTC_TimeRegulate();
 //  }
+    
+    GPIO_InitTypeDef GPIO_InitStructure;
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
+    /* Setup SysTick Timer for 1 msec interrupts.*/
+    if (SysTick_Config(SystemCoreClock / 1000))
+    { 
+	    /* Capture error */ 
+	    while (1);
+    }
 
-     SDRAM_Init();
-     cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
-     log_append("Start application\n");
+    /* Enable the BUTTON Clock */
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+    /* Configure Button pin as Output */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    /* Force capacity to be charged quickly */
+    GPIO_WriteBit(GPIOA, GPIO_Pin_0, Bit_RESET);
+    Delay (25);
+
+    /* Check whether the test mode should be started */
+    STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_GPIO); 
+
+    LowLevel_Init();
+    
+   
+    USBH_Init(&USB_OTG_Core, 
+           USB_OTG_HS_CORE_ID,
+            &USB_Host,
+            &USBH_MSC_cb, 
+            &USR_cb); 
   
-     
-     EnableDMA2DInterrupt();
-     NVIC_SetPriority(DMA2D_IRQn, 0);
-     NVIC_EnableIRQ(DMA2D_IRQn);
-     DMA2D_ITConfig(DMA2D_IT_TC, ENABLE);
+    goto mon;
 
+    while (1) 
+         USBH_Process(&USB_OTG_Core, &USB_Host);
+
+
+mon: 
+    cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
+    log_append("Start application\n");
+
+     
 /*
      EnableAllDMA();
 
@@ -804,66 +853,21 @@ int main(void)
      SPI_I2S_ITConfig(SPI5, SPI_I2S_IT_TXE, ENABLE); 
 */
 
-     g_dma_enable = 1;
-     g_init_usb_core = 0;
-
-     g_init_usb_core++;
-     USBH_Init(&USB_OTG_Core, 
-           USB_OTG_HS_CORE_ID,
-            &USB_Host,
-            &USBH_MSC_cb, 
-            &USR_cb); 
-
-
      InitMEMS(); 
      
      STM_EVAL_LEDInit(LED3); 
      STM_EVAL_LEDInit(LED4);
-
-
-     SysTick_Config(SystemCoreClock / 1000);
-
 
      while (1)
      {
          /* Host Task handler */
          USBH_Process(&USB_OTG_Core, &USB_Host);
 	 Routine_MEMS();
-	 Delay(5);
-	 log_append("Idle mode\n");
-         __WFI(); 
-
-         if ( 0 /* i++ == 0x1000* */ )
-         {
-             STM_EVAL_LEDToggle(LED3);
-	     i = 0;
-             // log_append("-\n");
-	     // Routine_MEMS();
-         } 
-
-//	 if (g_dma_enable != 1 && g_init_usb_core < 2) {
-//		 g_init_usb_core++;
-/*		 USBH_Init(&USB_OTG_Core, 
-				 USB_OTG_HS_CORE_ID,
-				 &USB_Host,
-				 &USBH_MSC_cb, 
-				 &USR_cb); */
-//	 }
+	 // Delay(1);
+	 // log_append("Idle mode\n");
+         // __WFI(); 
 
      }
-
-// Serial port (ttyACM0)
-
-/*  USBD_Init(&USB_OTG_dev,
-#ifdef USE_USB_OTG_HS 
-            USB_OTG_HS_CORE_ID,
-#else            
-            USB_OTG_FS_CORE_ID,
-#endif  
-            &USR_desc, 
-            &USBD_CDC_cb, 
-            &USR_cb);
-*/
 
 } 
 
@@ -886,6 +890,14 @@ void assert_failed(uint8_t* file, uint32_t line)
     {}
 }
 #endif
+
+
+void vApplicationMallocFailedHook( void )
+{
+  while (1)
+  {}
+}
+
 
 /**
   * @}

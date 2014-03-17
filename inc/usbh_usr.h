@@ -74,6 +74,7 @@ extern  USBH_Usr_cb_TypeDef USR_cb;
 #define USH_USR_FS_WRITEFILE  2
 #define USH_USR_FS_DRAW       3
 #define USH_USR_FS_NOTHING    4
+#define USH_USR_FS_READVIDEO  5
 /**
   * @}
   */ 

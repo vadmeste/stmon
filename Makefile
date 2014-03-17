@@ -46,7 +46,7 @@ AS_DEFS =
 
 # include directories (absolute or relative paths to additional folders with
 # headers, current folder is always included)
-INC_DIRS = inc
+INC_DIRS = inc STemWinLibrary522_4x9i/inc STemWinLibrary522_4x9i/Config FreeRTOS/Source/include
 
 # library directories (absolute or relative paths to additional folders with
 # libraries)
@@ -58,7 +58,7 @@ LIBS =
 
 # additional directories with source files (absolute or relative paths to
 # folders with source files, current folder is always included)
-SRCS_DIRS = src
+SRCS_DIRS = src Lib STemWinLibrary522_4x9i/OS/  STemWinLibrary522_4x9i/Config/ FreeRTOS/Source FreeRTOS/Source/portable/MemMang FreeRTOS/Source/portable/GCC/ARM_CM4F/ 
 
 # extension of C++ files
 CXX_EXT = cpp
@@ -123,7 +123,8 @@ endif
 #=============================================================================#
 
 # core flags
-CORE_FLAGS = -mcpu=$(CORE) -mthumb
+CORE_FLAGS = -mcpu=$(CORE) -mthumb -mlittle-endian -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16
+
 
 # flags for C++ compiler
 CXX_FLAGS = -nostdlib -std=$(CXX_STD) -g -ggdb3 -fno-rtti -fno-exceptions -fverbose-asm -Wa,-ahlms=$(OUT_DIR_F)$(notdir $(<:.$(CXX_EXT)=.lst))
@@ -151,6 +152,9 @@ ifeq ($(USES_CXX), 1)
 else
 	LD_FLAGS += -nostartfiles
 endif
+
+# LD_FLAGS += -lSTemWin522_4x9i_CM4_OS_GCC -LSTemWinLibrary522_4x9i/Lib/
+
 
 #=============================================================================#
 # do some formatting
@@ -200,7 +204,7 @@ $(ELF) : $(LD_SCRIPT)
 
 $(ELF) : $(OBJS)
 	@echo 'Linking target: $(ELF)'
-	$(CXX) $(LD_FLAGS_F) $(OBJS) $(LIBS) -o $@
+	$(CXX) $(LD_FLAGS_F) $(OBJS) $(LIBS)  STemWinLibrary522_4x9i/Lib/libSTemWin522_4x9i_CM4_OS_GCC.a -o $@
 	@echo ' '
 
 #-----------------------------------------------------------------------------#

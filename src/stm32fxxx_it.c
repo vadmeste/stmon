@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    LTDC_AnimatedPictureFromUSB/stm32fxxx_it.c
+  * @file    stm32xxx_it.c
   * @author  MCD Application Team
   * @version V1.0.1
   * @date    11-November-2013
-  * @brief   This file includes the interrupt handlers for the application
+  * @brief   Exceptions Handlers
   ******************************************************************************
   * @attention
   *
@@ -26,40 +26,50 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_bsp.h"
+#include "global_includes.h"
 #include "usb_hcd_int.h"
 #include "usbh_core.h"
-#include "stm32fxxx_it.h"
+
+#include "usb_core.h"
+#include "usbd_core.h"
+// #include "usbd_hid_core.h"
+#include "usb_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
-extern USB_OTG_CORE_HANDLE          USB_OTG_Core;
-extern USBH_HOST                    USB_Host;
- 
+extern __IO uint32_t TS_Pressed;
+extern USB_OTG_CORE_HANDLE           USB_OTG_Core;
+extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
+extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
+__IO uint32_t ButtonPressed = 0x00;
+extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
+extern __IO uint32_t PeriodValue;
+extern __IO uint32_t CaptureNumber;
+uint16_t tmpCC4[2] = {0, 0};
 /* Private function prototypes -----------------------------------------------*/
 extern void USB_OTG_BSP_TimerIRQ (void);
-
+extern void xPortSysTickHandler( void );
+extern void LTDC_ISR_Handler(void);
+extern void DMA2D_ISR_Handler(void);
+/* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
 /*             Cortex-M Processor Exceptions Handlers                         */
 /******************************************************************************/
+
 /**
-  * @brief  NMI_Handler
-  *         This function handles NMI exception.
+  * @brief  This function handles NMI exception.
   * @param  None
   * @retval None
   */
 void NMI_Handler(void)
-{
-}
+{}
 
 /**
-  * @brief  HardFault_Handler
-  *         This function handles Hard Fault exception.
+  * @brief  This function handles Hard Fault exception.
   * @param  None
   * @retval None
   */
@@ -67,13 +77,11 @@ void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
-  * @brief  MemManage_Handler
-  *         This function handles Memory Manage exception.
+  * @brief  This function handles Memory Manage exception.
   * @param  None
   * @retval None
   */
@@ -81,13 +89,11 @@ void MemManage_Handler(void)
 {
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
-  * @brief  BusFault_Handler
-  *         This function handles Bus Fault exception.
+  * @brief  This function handles Bus Fault exception.
   * @param  None
   * @retval None
   */
@@ -95,13 +101,11 @@ void BusFault_Handler(void)
 {
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
-  * @brief  UsageFault_Handler
-  *         This function handles Usage Fault exception.
+  * @brief  This function handles Usage Fault exception.
   * @param  None
   * @retval None
   */
@@ -109,171 +113,127 @@ void UsageFault_Handler(void)
 {
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
-  {
-  }
+  {}
 }
 
 /**
-  * @brief  SVC_Handler
-  *         This function handles SVCall exception.
-  * @param  None
-  * @retval None
-  */
-void SVC_Handler(void)
-{
-}
-
-/**
-  * @brief  DebugMon_Handler
-  *         This function handles Debug Monitor exception.
+  * @brief  This function handles Debug Monitor exception.
   * @param  None
   * @retval None
   */
 void DebugMon_Handler(void)
-{
-}
-
+{}
 
 /**
-  * @brief  PendSV_Handler
-  *         This function handles PendSVC exception.
+  * @brief  This function handles SVCall exception.
+  * @param  None
+  * @retval None
+  */
+void SVC_Handler(void)
+{}
+
+/**
+  * @brief  This function handles PendSV_Handler exception.
   * @param  None
   * @retval None
   */
 void PendSV_Handler(void)
-{
-}
+{}
 
 /**
-  * @brief  EXTI1_IRQHandler
-  *         This function handles External line 1 interrupt request.
+  * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
-void EXTI1_IRQHandler(void)
+void SysTick_Handler(void)
 {
-  if(EXTI_GetITStatus(EXTI_Line1) != RESET)
-  {
-      USB_Host.usr_cb->OverCurrentDetected();
-      EXTI_ClearITPendingBit(EXTI_Line1);
-  }
+  // xPortSysTickHandler();
+  TimingDelay_Decrement();
 }
 
 /**
- * @brief FLASH handler
- **/
-
-void FLASH_IRQHandler(void)
-{
-    if (FLASH_GetStatus() == FLASH_COMPLETE)
-    {
-        log_append("Flash operation successful\n");
-    }
+  * @brief  This function handles PPP interrupt request.
+  * @param  None
+  * @retval None
+  */
+void EXTI0_IRQHandler(void)
+{ 
+  ButtonPressed = 0x01;
+  
+  EXTI_ClearITPendingBit(USER_BUTTON_EXTI_LINE);
 }
-
-void SPI5_IRQHandler(SPI_TypeDef* SPIChannel) {
-
-    log_append("SPI : activity\n");
-    // if (SPI_I2S_GetITStatus(SPIChannel, SPI_I2S_IT_TXE) != RESET) {
-    //    SPI_I2S_ClearITPendingBit(SPIChannel, SPI_I2S_IT_TXE);
-    // } 
-}
-
 /**
   * @brief  TIM2_IRQHandler
   *         This function handles Timer2 Handler.
   * @param  None
   * @retval None
   */
+
 void TIM2_IRQHandler(void)
 {
   USB_OTG_BSP_TimerIRQ();
 }
 
+/**
+  * @brief  This function handles OTG_HS Handler.
+  * @param  None
+  * @retval None
+  */
+void OTG_HS_IRQHandler(void)
+{
+  {
+    USBH_OTG_ISR_Handler (&USB_OTG_Core);
+  }
+}
 
 /**
-  * @brief  OTG_FS_IRQHandler
-  *          This function handles USB-On-The-Go FS global interrupt request.
-  *          requests.
+  * @brief  This function handles TIM5 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void TIM5_IRQHandler(void)
+{
+ /* if (TIM_GetITStatus(TIM5, TIM_IT_CC4) != RESET)
+  {    
+    tmpCC4[CaptureNumber++] = TIM_GetCapture4(TIM5);
+   
+    TIM_ClearITPendingBit(TIM5, TIM_IT_CC4);
+
+    if (CaptureNumber >= 2)
+    {
+      PeriodValue = (uint16_t)(0xFFFF - tmpCC4[0] + tmpCC4[1] + 1);
+    }
+  } */
+}
+
+/**
+  * @brief  This function handles DMA2 Stream1 global interrupt request.
   * @param  None
   * @retval None
   */
 
-void OTG_HS_IRQHandler(void)
+void DMA2_Stream1_IRQHandler(void)
 {
-  USBH_OTG_ISR_Handler(&USB_OTG_Core);
 }
 
-void generic_dma_handler(void) {
-    log_append("DMA_activity\n");
-}
-
-void DMA1_Stream0_IRQHandler(void) 
+/**
+  * @brief  This function handles LTDC global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void LTDC_IRQHandler(void)
 {
-    generic_dma_handler();
-}
-void DMA1_Stream1_IRQHandler(void) {
-    generic_dma_handler();
-}
-void DMA1_Stream2_IRQHandler(void) {
-    generic_dma_handler();
-}
-void DMA1_Stream3_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA1_Stream4_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA1_Stream5_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA1_Stream6_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA1_Stream7_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream0_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream1_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream2_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream3_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream4_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream5_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream6_IRQHandler(void) {
-    generic_dma_handler();
-}
-void   DMA2_Stream7_IRQHandler(void){
-    generic_dma_handler();
+  LTDC_ISR_Handler();
 }
 
-void SysTick_Handler(void)
+/**
+  * @brief  This function handles DMA2D global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void DMA2D_IRQHandler(void)
 {
-	// STM_EVAL_LEDToggle(LED3);
-	// log_append("Timer INTR\n");
-	TimingDelay_Decrement();
+  DMA2D_ISR_Handler();
 }
-    
-void DMA2D_IRQHandler(void) {
-
-   if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
-    {
-        log_append("DMA2D_completed\n");
-        DMA2D_ClearITPendingBit(DMA2D_IT_TC);
-    } 
-
-}
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
