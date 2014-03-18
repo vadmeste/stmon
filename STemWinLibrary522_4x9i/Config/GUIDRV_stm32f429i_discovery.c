@@ -451,7 +451,9 @@ static void _DMA_AlphaBlendingBulk(LCD_COLOR * pColorFG, LCD_COLOR * pColorBG, L
   //
   
   DMA2D->CR     |= 1;  
-    
+  
+  log_append("_DMA_AlphaBlendingBulk\n");  
+
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
   }
@@ -504,6 +506,9 @@ static LCD_COLOR _DMA_MixColors(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens) {
 
   //_DMA_ExecOperation();
   DMA2D->CR     |= 1;                               // Control Register (Start operation)
+
+  log_append("_DMA_MixColors\n");
+
   //
   // Wait until transfer is done
   //
@@ -546,6 +551,8 @@ static void _DMA_ConvertColor(void * pSrc, void * pDst,  U32 PixelFormatSrc, U32
   // Execute operation
   //
   DMA2D->CR     |= 1;  
+
+  log_append("_DMA_ConvertColor\n");
     
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
@@ -642,6 +649,8 @@ static void _DMA_MixColorsBulk(LCD_COLOR * pColorFG, LCD_COLOR * pColorBG, LCD_C
   // Execute operation
   //
   DMA2D->CR     |= 1;  
+
+  log_append("_DMA_MixColorsBulk\n");
     
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
@@ -846,6 +855,9 @@ static void _DMA_Copy(int LayerIndex, void * pSrc, void * pDst, int xSize, int y
   DMA2D->FGPFCCR = PixelFormat;                     // Foreground PFC Control Register (Defines the input pixel format)
   DMA2D->NLR     = (U32)(xSize << 16) | (U16)ySize; // Number of Line Register (Size configuration of area to be transfered)
   DMA2D->CR     |= 1;                               // Start operation
+
+  log_append("_DMA_Copy\n");
+
   //
   // Wait until transfer is done
   //
@@ -869,6 +881,9 @@ static void _DMA_Fill(int LayerIndex, void * pDst, int xSize, int ySize, int Off
   DMA2D->OPFCCR  = PixelFormat;                     // Defines the number of pixels to be transfered
   DMA2D->NLR     = (U32)(xSize << 16) | (U16)ySize; // Size configuration of area to be transfered
   DMA2D->CR     |= 1;                               // Start operation
+
+  log_append("_DMA_Fill\n");
+
   //
   // Wait until transfer is done
   //
@@ -1034,6 +1049,9 @@ static void _DMA_DrawBitmapL8(void * pSrc, void * pDst,  U32 OffSrc, U32 OffDst,
   // Execute operation
   //
   DMA2D->CR     |= 1;                               // Start operation
+  
+  log_append("_DMA_DrawBitmapL8\n");
+
   //
   // Wait until transfer is done
   //
