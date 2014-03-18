@@ -104,6 +104,9 @@ __ALIGN_BEGIN USBH_HOST                USB_Host __ALIGN_END;
 extern FATFS fatfs;
 extern FIL file;
 
+uint32_t demo_mode = 0;
+uint32_t init_done = 0;
+
 /**
   * @}
   */ 
@@ -771,6 +774,77 @@ void SetSysClockTo168(void)
 }
 
 
+xTaskHandle  Loop_Handle;
+
+int Loop_Task(void * pvParameters) {
+	// while (! init_done)
+        //		;
+	// log_append("loop start\n");
+	while (1) {
+		// log_append("Background loop\n");
+		Routine_MEMS();
+		vTaskDelay(100);
+	}
+}
+
+
+
+xTaskHandle  Task_Handle;
+int Main_Task(void * pvParameters) {
+	
+#define Loop_Task_PRIO          ( tskIDLE_PRIORITY  + 10 )
+#define Loop_Task_STACK         ( 3048 )
+
+	LowLevel_Init();
+
+
+	USBH_Init(&USB_OTG_Core, 
+			USB_OTG_HS_CORE_ID,
+			&USB_Host,
+			&USBH_MSC_cb, 
+			&USR_cb); 
+
+	cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
+	log_append("Start application\n");
+
+
+	/*
+	   EnableAllDMA();
+
+	   EnableFlashInterrupt();
+	   FLASH_ITConfig(FLASH_IT_EOP, ENABLE);
+
+	   EnableAllSPIInterrupt();
+	   SPI_I2S_ITConfig(SPI5, SPI_I2S_IT_TXE, ENABLE); 
+	   */
+
+	InitMEMS(); 
+
+	STM_EVAL_LEDInit(LED3); 
+	STM_EVAL_LEDInit(LED4);
+
+
+	xTaskCreate(Loop_Task,
+              (signed char const*)"LOOP_DEMO",
+              Loop_Task_STACK,
+              NULL,
+              Loop_Task_PRIO,
+              &Loop_Handle);
+
+	init_done = 1;
+
+	while (1)
+	{
+		/* Host Task handler */
+		USBH_Process(&USB_OTG_Core, &USB_Host);
+		USB_OTG_BSP_mDelay(5);
+		// Routine_MEMS();
+		log_append("Idle mode\n");
+		__WFI(); 
+	}
+}
+
+
 
 /**
   * @brief  Program entry point
@@ -818,47 +892,24 @@ int main(void)
 
     /* Force capacity to be charged quickly */
     GPIO_WriteBit(GPIOA, GPIO_Pin_0, Bit_RESET);
+    demo_mode = 1;
     Delay (25);
+    demo_mode = 0;
 
-    /* Check whether the test mode should be started */
-    STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_GPIO); 
+#define Main_Task_PRIO    ( tskIDLE_PRIORITY  + 9 )
+#define Main_Task_STACK   ( 512 )
 
-    LowLevel_Init();
-    
-   
-    USBH_Init(&USB_OTG_Core, 
-           USB_OTG_HS_CORE_ID,
-            &USB_Host,
-            &USBH_MSC_cb, 
-            &USR_cb); 
-  
-    cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
-    log_append("Start application\n");
-     
-/*
-     EnableAllDMA();
 
-     EnableFlashInterrupt();
-     FLASH_ITConfig(FLASH_IT_EOP, ENABLE);
-     
-     EnableAllSPIInterrupt();
-     SPI_I2S_ITConfig(SPI5, SPI_I2S_IT_TXE, ENABLE); 
-*/
+     xTaskCreate(Main_Task,
+		     (signed char const*)"MAIN_GND",
+		     Main_Task_STACK,
+		     NULL,
+		     Main_Task_PRIO,
+		     &Task_Handle);
 
-     InitMEMS(); 
-     
-     STM_EVAL_LEDInit(LED3); 
-     STM_EVAL_LEDInit(LED4);
 
-     while (1)
-     {
-         /* Host Task handler */
-         USBH_Process(&USB_OTG_Core, &USB_Host);
-	 USB_OTG_BSP_mDelay(5);
-	 Routine_MEMS();
-	 log_append("Idle mode\n");
-	 __WFI(); 
-     }
+     vTaskStartScheduler();
+
 
 } 
 

@@ -40,6 +40,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern __IO uint32_t TS_Pressed;
+extern uint32_t demo_mode;
 extern USB_OTG_CORE_HANDLE           USB_OTG_Core;
 extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
@@ -147,7 +148,10 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  // xPortSysTickHandler();
+
+if(demo_mode == 0)
+  xPortSysTickHandler();
+else  
   TimingDelay_Decrement();
 }
 
@@ -233,6 +237,11 @@ void LTDC_IRQHandler(void)
   */
 void DMA2D_IRQHandler(void)
 {
+  if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
+  {
+    log_append("DMA2D_completed\n");
+  }
+
   DMA2D_ISR_Handler();
 }
 
