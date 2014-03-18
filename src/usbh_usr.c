@@ -502,7 +502,7 @@ int USBH_USR_MSC_Application(void)
       {
     	  USB_OTG_BSP_mDelay(100);
           Toggle_Leds();
-          // Routine_MEMS();
+          Routine_MEMS();
       } 
  
     USBH_USR_ApplicationState = USH_USR_FS_DRAW;

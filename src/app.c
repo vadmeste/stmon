@@ -832,16 +832,8 @@ int main(void)
             &USBH_MSC_cb, 
             &USR_cb); 
   
-    goto mon;
-
-    while (1) 
-         USBH_Process(&USB_OTG_Core, &USB_Host);
-
-
-mon: 
     cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
     log_append("Start application\n");
-
      
 /*
      EnableAllDMA();
@@ -862,11 +854,10 @@ mon:
      {
          /* Host Task handler */
          USBH_Process(&USB_OTG_Core, &USB_Host);
+	 USB_OTG_BSP_mDelay(5);
 	 Routine_MEMS();
-	 // Delay(1);
-	 // log_append("Idle mode\n");
-         // __WFI(); 
-
+	 log_append("Idle mode\n");
+	 __WFI(); 
      }
 
 } 

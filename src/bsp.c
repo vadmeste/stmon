@@ -90,8 +90,8 @@ uint32_t LowLevel_Init (void)
   GPIO_SetBits(GPIOC, GPIO_Pin_1);
   
   /* Initialize the LEDs */
-  STM_EVAL_LEDInit(LED3);
-  STM_EVAL_LEDInit(LED4);
+  // STM_EVAL_LEDInit(LED3);
+  // STM_EVAL_LEDInit(LED4);
   
   /*Init Touchscreen */
   BSP_TSC_Init();
