@@ -141,6 +141,7 @@ mini_snprintf(char *fmt, ...)
 {
     int ret;
     va_list va;
+
     va_start(va, fmt);
     ret = mini_vsnprintf(fmt, va);
     va_end(va);

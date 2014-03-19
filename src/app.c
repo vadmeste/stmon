@@ -48,6 +48,7 @@
 #include "GUI_JPEG_Private.h"
 #include "string.h"
 
+#include <stdarg.h>
   
 ErrorStatus HSEStartUpStatus; 
 
@@ -536,15 +537,18 @@ static void log_append_datetime(Table_TypeDef table, uint8_t max_idx )
 
 }
 
-void _log_append(char* buf) {
-}
 
-void log_append(char* buf) {
-    
+void
+log_append(char *fmt, ...)
+{
+    int ret;
+    va_list va;
     int i = 0;
     char sep = 'T', space = ' ';
     uint32_t ss, subs;
-    
+ 
+    __disable_irq();
+
     RTC_WaitForSynchro();
 
     RTC_GetTime(RTC_Format_BCD, &RTC_TimeStructure);
@@ -562,12 +566,17 @@ void log_append(char* buf) {
     log_append_datetime(time_tbl, 14);
     cbWrite(&g_LogCB, &space);
 
-    for (i = 0; buf[i] != NULL ; i++) {
-        cbWrite(&g_LogCB, (ElemType*) &buf[i]);
-    } 
+    va_start(va, fmt);
+    ret = mini_vsnprintf(fmt, va);
+    va_end(va);
 
-    // char nl = '\n';
-    // cbWrite(&g_LogCB, (ElemType*) &nl);
+    __enable_irq();
+
+    return ret;
+}
+
+
+void _log_append(char* buf) {
 }
 
 void print_log() {
@@ -805,6 +814,7 @@ int Main_Task(void * pvParameters) {
 			&USR_cb); 
 
 	cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
+	
 	log_append("Start application\n");
 
 
@@ -900,12 +910,12 @@ int main(void)
 #define Main_Task_STACK   ( 512 )
 
 
-     xTaskCreate(Main_Task,
-		     (signed char const*)"MAIN_GND",
-		     Main_Task_STACK,
-		     NULL,
-		     Main_Task_PRIO,
-		     &Task_Handle);
+    xTaskCreate(Main_Task,
+		    (signed char const*)"MAIN_GND",
+		    Main_Task_STACK,
+		    NULL,
+		    Main_Task_PRIO,
+		    &Task_Handle);
 
 
      vTaskStartScheduler();
