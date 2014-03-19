@@ -67,9 +67,7 @@ DRESULT disk_read (
   
   if(HCD_IsDeviceConnected(&USB_OTG_Core))
   { 
-    char buf[32]; 
-    log_append("read_from_usb : start");
-    mini_snprintf(" %d bytes \n", 512*count);
+    log_append("read_from_usb : start (%d bytes)\n", 512 * count);
     do
     {
       status = USBH_MSC_Read10(&USB_OTG_Core, buff,sector,512 * count);
