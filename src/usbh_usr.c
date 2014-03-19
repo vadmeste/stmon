@@ -61,6 +61,7 @@
 * @}
 */ 
 
+#define USB_OTG_BSP_mDelay(x)	vTaskDelay(x)
 
 /** @defgroup USBH_USR_Private_Defines
 * @{
@@ -497,24 +498,27 @@ int USBH_USR_MSC_Application(void)
     // {
       // LCD_ErrLog((void *)MSG_WR_PROTECT);
     // }
+    
+   
       while(/* g_init_usb_core < 2 && */ (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
-             (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
+		      (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
-    	  USB_OTG_BSP_mDelay(100);
-          Toggle_Leds();
-          Routine_MEMS();
+	      USB_OTG_BSP_mDelay(100);
+	      Toggle_Leds();
+	      // Routine_MEMS();
       } 
- 
+    
+    LCD_X_DisplayDriver(1, LCD_X_INITCONTROLLER, NULL);
+    GUI_Init();
+    GUI_SelectLayer(1);  
+
+
     USBH_USR_ApplicationState = USH_USR_FS_DRAW;
     break;
   
   case USH_USR_FS_READVIDEO:
 
-
-    LCD_X_DisplayDriver(1, LCD_X_INITCONTROLLER, NULL);
-    GUI_Init();
-    GUI_SelectLayer(1);  
-
+    GUI_Clear();
     GUI_DispStringAt("> Video Player\n", 15, 20);
 
     f_mount(0, &fatfs);
@@ -868,7 +872,8 @@ uint32_t Storage_OpenReadFile(uint32_t Address)
 void Show_Image(void)
 {
   Storage_OpenReadFile(SDRAM_BANK_ADDR);
-  LCD_WriteBMP(SDRAM_BANK_ADDR);
+  // LCD_WriteBMP(SDRAM_BANK_ADDR);
+  GUI_BMP_Draw(SDRAM_BANK_ADDR, 0, 0);
 }
 
 /**
