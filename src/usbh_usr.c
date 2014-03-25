@@ -522,7 +522,7 @@ int USBH_USR_MSC_Application(void)
     GUI_DispStringAt("> Video Player\n", 15, 20);
 
     f_mount(0, &fatfs);
-    int res = f_open(&Video_File, "0:21.mov", FA_OPEN_EXISTING | FA_READ);
+    int res = f_open(&Video_File, "0:plane.mov", FA_OPEN_EXISTING | FA_READ);
     if (res == FR_OK) {
 	    while(_PlayMJPEG(&Video_File) >= 0)
 		    ;
