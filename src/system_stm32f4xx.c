@@ -119,18 +119,29 @@
 
 
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#if defined  (PLL_SOURCE_HSI)
-#define PLL_M      16
-#else
-#define PLL_M      8
-#endif
-#define PLL_N      336 // 360
+/* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
 
-/* SYSCLK = PLL_VCO / PLL_P */
+#if defined  (PLL_SOURCE_HSI)
+	#define PLL_M      16
+#else
+	#define PLL_M      8
+#endif
+
 #define PLL_P      2
 
-/* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
-#define PLL_Q      7
+#if defined(SYSCLK_96)
+	#define PLL_N      192 
+	#define PLL_Q      4 
+  	uint32_t SystemCoreClock = 96000000;
+#elif defined(SYSCLK_144)
+	#define PLL_N	   288
+	#define PLL_Q	   6
+	uint32_t SystemCoreClock = 144000000;
+#else
+	#define PLL_N	   336
+	#define PLL_Q      7
+	uint32_t SystemCoreClock = 168000000;
+#endif
 
 /******************************************************************************/
 
@@ -151,10 +162,7 @@
 /** @addtogroup STM32F4xx_System_Private_Variables
   * @{
   */
-
-  uint32_t SystemCoreClock = 168000000;
-//  uint32_t SystemCoreClock = 180000000;
-
+   
   __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 
 /**
