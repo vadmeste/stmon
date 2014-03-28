@@ -239,7 +239,7 @@ void DMA2D_IRQHandler(void)
 {
   if (DMA2D_GetITStatus(DMA2D_IT_TC) != RESET)
   {
-    log_append("DMA2D_completed\n");
+    log_append("docea_monitoring graphic_state idle\n");
   }
 
   DMA2D_ISR_Handler();

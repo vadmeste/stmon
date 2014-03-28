@@ -803,7 +803,7 @@ uint16_t SPI_I2S_ReceiveData(SPI_TypeDef* SPIx)
   /* Check the parameters */
   assert_param(IS_SPI_ALL_PERIPH_EXT(SPIx));
 
-  log_append("SPI receive data\n");
+  log_append("docea_monitoring spi_state receive\n");
   
   /* Return the data in the DR register */
   return SPIx->DR;
@@ -821,7 +821,7 @@ void SPI_I2S_SendData(SPI_TypeDef* SPIx, uint16_t Data)
   /* Check the parameters */
   assert_param(IS_SPI_ALL_PERIPH_EXT(SPIx));
 
-  log_append("SPI send_data\n");
+  log_append("docea_monitoring spi_state send\n");
   
   /* Write in the DR register the data to be sent */
   SPIx->DR = Data;
