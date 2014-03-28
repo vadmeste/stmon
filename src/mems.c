@@ -130,9 +130,26 @@ static void Demo_GyroConfig(void)
   L3GD20_FilterConfigTypeDef L3GD20_FilterStructure;
 
   /* Configure Mems L3GD20 */
+#if defined(USE_MEMS)
   L3GD20_InitStructure.Power_Mode = L3GD20_MODE_ACTIVE;
+#else
+  L3GD20_InitStructure.Power_Mode = L3GD20_MODE_POWERDOWN;
+#endif
+
   L3GD20_InitStructure.Output_DataRate = L3GD20_OUTPUT_DATARATE_1;
-  L3GD20_InitStructure.Axes_Enable = L3GD20_AXES_ENABLE;
+
+  L3GD20_InitStructure.Axes_Enable = 0x00 
+#if defined(USE_MEMS_Y)
+  |	 0x01
+#endif
+#if defined(USE_MEMS_X)
+  |	 0x02
+#endif
+#if defined(USE_MEMS_Z)
+  | 	 0x04
+#endif
+  ;
+
   L3GD20_InitStructure.Band_Width = L3GD20_BANDWIDTH_4;
   L3GD20_InitStructure.BlockData_Update = L3GD20_BlockDataUpdate_Continous;
   L3GD20_InitStructure.Endianness = L3GD20_BLE_LSB;

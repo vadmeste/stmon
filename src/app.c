@@ -148,7 +148,10 @@ __IO uint32_t   uwCaptureNumber = 0;
 __IO uint32_t   uwPeriodValue = 0;
 
 
-CircularBuffer g_LogCB;
+CircularBuffer 	g_LogCB;
+uint8_t		g_LogCB_ready = 0;
+
+
 short st_subsecond;
 
 uint32_t g_dma_enable;
@@ -546,6 +549,9 @@ log_append(char *fmt, ...)
     int i = 0;
     char sep = 'T', space = ' ';
     uint32_t ss, subs;
+
+    if (! g_LogCB_ready) 
+	    return;
  
     __disable_irq();
 
@@ -814,6 +820,7 @@ int Main_Task(void * pvParameters) {
 			&USR_cb); 
 
 	cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
+	g_LogCB_ready = 1;
 	
 	log_append("Start application\n");
 
