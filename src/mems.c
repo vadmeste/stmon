@@ -80,7 +80,7 @@ void Routine_MEMS(void)
       LCD_SetTextColor(LCD_COLOR_MAGENTA);
       LCD_DrawFullRect(100, 40, 40, 120);
       LCD_FillTriangle(50, 190, 120, 160, 160, 310); */
-      log_append("ACCEL down\n");
+      log_append("docea_monitoring accel_state down\n");
       // Delay(50);
     }
     if ((int16_t)Buffer[0] < -40)
@@ -90,7 +90,7 @@ void Routine_MEMS(void)
       LCD_SetTextColor(LCD_COLOR_RED);
       LCD_DrawFullRect(100, 160, 40, 120);
       LCD_FillTriangle(50, 190, 120, 160, 160, 10); */
-      log_append("ACCEL up\n"); 
+      log_append("docea_monitoring accel_state up\n"); 
       // Delay(50);
     }
   }
@@ -103,7 +103,7 @@ void Routine_MEMS(void)
       LCD_SetTextColor(LCD_COLOR_GREEN);
       LCD_DrawFullRect(120, 140, 100, 40);
       LCD_FillTriangle(120, 120, 5, 60, 260, 160); */      
-      log_append("ACCEL left\n");
+      log_append("docea_monitoring accel_state left\n");
       // Delay(50);
     }
     if ((int16_t)Buffer[1] > 40)
@@ -113,7 +113,7 @@ void Routine_MEMS(void)
       LCD_SetTextColor(LCD_COLOR_BLUE);
       LCD_DrawFullRect(20, 140, 100, 40);
       LCD_FillTriangle(120, 120, 235, 60, 260, 160); */
-      log_append("ACCEL right\n");
+      log_append("docea_monitoring accel_state right\n");
       // Delay(50);
     } 
   } 

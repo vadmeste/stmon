@@ -241,7 +241,7 @@ void DMA2D_StructInit(DMA2D_InitTypeDef* DMA2D_InitStruct)
 
 void DMA2D_StartTransfer(void)
 {
-    log_append("DMA2D_start\n");
+    log_append("docea_monitoring dma2d_state run\n");
     /* Start DMA2D transfer by setting START bit */
     DMA2D->CR |= (uint32_t)DMA2D_CR_START;
 }

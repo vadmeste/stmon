@@ -856,7 +856,7 @@ int Main_Task(void * pvParameters) {
 		USBH_Process(&USB_OTG_Core, &USB_Host);
 		USB_OTG_BSP_mDelay(5);
 		// Routine_MEMS();
-		log_append("Idle mode\n");
+		log_append("docea_monitoring cpu_state sleep\n");
 		__WFI(); 
 	}
 }

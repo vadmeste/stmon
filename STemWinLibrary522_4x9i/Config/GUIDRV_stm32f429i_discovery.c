@@ -452,7 +452,7 @@ static void _DMA_AlphaBlendingBulk(LCD_COLOR * pColorFG, LCD_COLOR * pColorBG, L
   
   DMA2D->CR     |= 1;  
   
-  log_append("_DMA_AlphaBlendingBulk\n");  
+  log_append("docea_monitoring graphic_state alpha_blending\n");  
 
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
@@ -507,7 +507,7 @@ static LCD_COLOR _DMA_MixColors(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens) {
   //_DMA_ExecOperation();
   DMA2D->CR     |= 1;                               // Control Register (Start operation)
 
-  log_append("_DMA_MixColors\n");
+  log_append("docea_monitoring graphic_state mix_column\n");
 
   //
   // Wait until transfer is done
@@ -552,7 +552,7 @@ static void _DMA_ConvertColor(void * pSrc, void * pDst,  U32 PixelFormatSrc, U32
   //
   DMA2D->CR     |= 1;  
 
-  log_append("_DMA_ConvertColor\n");
+  log_append("docea_monitoring graphic_state convert_color\n");
     
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
@@ -650,7 +650,7 @@ static void _DMA_MixColorsBulk(LCD_COLOR * pColorFG, LCD_COLOR * pColorBG, LCD_C
   //
   DMA2D->CR     |= 1;  
 
-  log_append("_DMA_MixColorsBulk\n");
+  log_append("docea_monitoring graphic_state colors_bulk\n");
     
   while (DMA2D->CR & DMA2D_CR_START) {
     //__WFI();                                        // Sleep until next interrupt
@@ -856,7 +856,7 @@ static void _DMA_Copy(int LayerIndex, void * pSrc, void * pDst, int xSize, int y
   DMA2D->NLR     = (U32)(xSize << 16) | (U16)ySize; // Number of Line Register (Size configuration of area to be transfered)
   DMA2D->CR     |= 1;                               // Start operation
 
-  log_append("_DMA_Copy\n");
+  log_append("docea_monitoring graphic_state copy\n");
 
   //
   // Wait until transfer is done
@@ -882,7 +882,7 @@ static void _DMA_Fill(int LayerIndex, void * pDst, int xSize, int ySize, int Off
   DMA2D->NLR     = (U32)(xSize << 16) | (U16)ySize; // Size configuration of area to be transfered
   DMA2D->CR     |= 1;                               // Start operation
 
-  log_append("_DMA_Fill\n");
+  log_append("docea_monitoring graphic_state fill\n");
 
   //
   // Wait until transfer is done
@@ -1050,7 +1050,7 @@ static void _DMA_DrawBitmapL8(void * pSrc, void * pDst,  U32 OffSrc, U32 OffDst,
   //
   DMA2D->CR     |= 1;                               // Start operation
   
-  log_append("_DMA_DrawBitmapL8\n");
+  log_append("docea_monitoring graphic_state draw_bitmap\n");
 
   //
   // Wait until transfer is done

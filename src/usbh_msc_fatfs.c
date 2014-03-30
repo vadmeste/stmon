@@ -67,7 +67,8 @@ DRESULT disk_read (
   
   if(HCD_IsDeviceConnected(&USB_OTG_Core))
   { 
-    log_append("read_from_usb : start (%d bytes)\n", 512 * count);
+    log_append("docea_monitoring usb_state run\n");
+    log_append("docea_monitoring usb_bytes %d\n", 512 * count);
     do
     {
       status = USBH_MSC_Read10(&USB_OTG_Core, buff,sector,512 * count);
@@ -80,7 +81,7 @@ DRESULT disk_read (
     }
     while(status == USBH_MSC_BUSY );
     
-    log_append("read_from_usb finished\n");
+    log_append("docea_monitoring usb_state idle\n");
   }
   
   if(status == USBH_MSC_OK)
