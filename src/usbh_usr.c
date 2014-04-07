@@ -80,6 +80,7 @@ extern USBH_HOST USB_Host;
 extern CircularBuffer g_LogCB;
 extern uint32_t g_dma_enable;
 extern uint32_t g_init_usb_core;
+extern uint8_t g_LogCB_enable;
 /**
 * @}
 */ 
@@ -549,6 +550,9 @@ int USBH_USR_MSC_Application(void)
 //    LCD_DeInit();
 //    LCD_ClassicInit();
     // LCD_LOG_Init();
+
+    
+    g_LogCB_enable = 0;
 
     USB_OTG_BSP_mDelay(100);
 

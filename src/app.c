@@ -149,7 +149,7 @@ __IO uint32_t   uwPeriodValue = 0;
 
 
 CircularBuffer 	g_LogCB;
-uint8_t		g_LogCB_ready = 0;
+uint8_t  g_LogCB_enable = 0;
 
 
 short st_subsecond;
@@ -542,18 +542,14 @@ static void log_append_datetime(Table_TypeDef table, uint8_t max_idx )
 
 
 void
-log_append(char *fmt, ...)
-{
-    int ret;
-    va_list va;
+dirty_log_append(char *fmt, va_list va) {
+
     int i = 0;
     char sep = 'T', space = ' ';
     uint32_t ss, subs;
 
-    if (! g_LogCB_ready) 
+    if (! g_LogCB_enable) 
 	    return;
- 
-    __disable_irq();
 
     RTC_WaitForSynchro();
 
@@ -572,13 +568,24 @@ log_append(char *fmt, ...)
     log_append_datetime(time_tbl, 14);
     cbWrite(&g_LogCB, &space);
 
+    mini_vsnprintf(fmt, va);
+
+
+}
+
+
+void
+log_append(char *fmt, ...)
+{
+    va_list va;
+
+    __disable_irq();
+
     va_start(va, fmt);
-    ret = mini_vsnprintf(fmt, va);
+    dirty_log_append(fmt, va);
     va_end(va);
 
     __enable_irq();
-
-    return ret;
 }
 
 
@@ -820,7 +827,7 @@ int Main_Task(void * pvParameters) {
 			&USR_cb); 
 
 	cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
-	g_LogCB_ready = 1;
+	g_LogCB_enable = 1;
 	
 	log_append("Start application\n");
 
@@ -856,7 +863,7 @@ int Main_Task(void * pvParameters) {
 		USBH_Process(&USB_OTG_Core, &USB_Host);
 		USB_OTG_BSP_mDelay(5);
 		// Routine_MEMS();
-		log_append("docea_monitoring cpu_state sleep\n");
+		// log_append("docea_monitoring cpu_state sleep\n");
 		__WFI(); 
 	}
 }

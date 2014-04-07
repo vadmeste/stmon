@@ -69,6 +69,7 @@ void vApplicationIdleHook(void)
     /* Store the handle to the idle task. */
     xIdleHandle = xTaskGetCurrentTaskHandle();
   }
+  __WFI();
 }
 
 /**

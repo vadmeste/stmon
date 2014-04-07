@@ -245,4 +245,62 @@ void DMA2D_IRQHandler(void)
   DMA2D_ISR_Handler();
 }
 
+static super(char * buf) {
+	log_append(buf);
+}
+
+
+void WWDG_IRQHandler(void) { super("WWDG_IRQHandler\n"); }
+void PVD_IRQHandler(void) { super("PVD_IRQHandler\n"); }
+void TAMP_STAMP_IRQHandler(void) { super("TAMP_STAMP_IRQHandler\n"); }
+void RTC_WKUP_IRQHandler(void) { super("RTC_WKUP_IRQHandler\n"); }
+void FLASH_IRQHandler(void) { super("FLASH_IRQHandler\n"); }
+void RCC_IRQHandler(void) { super("RCC_IRQHandler\n"); }
+void EXTI1_IRQHandler(void) { super("EXTI1_IRQHandler\n"); }
+void EXTI2_IRQHandler(void) { super("EXTI2_IRQHandler\n"); }
+void EXTI3_IRQHandler(void) { super("EXTI3_IRQHandler\n"); }
+void DMA1_Stream0_IRQHandler(void) { super("DMA1_Stream0_IRQHandler\n"); }
+void DMA1_Stream1_IRQHandler(void) { super("DMA1_Stream1_IRQHandler\n"); }
+void DMA1_Stream2_IRQHandler(void) { super("DMA1_Stream2_IRQHandler\n"); }
+void DMA1_Stream3_IRQHandler(void) { super("DMA1_Stream3_IRQHandler\n"); }
+void DMA1_Stream4_IRQHandler(void) { super("DMA1_Stream4_IRQHandler\n"); }
+void DMA1_Stream5_IRQHandler(void) { super("DMA1_Stream5_IRQHandler\n"); }
+void DMA1_Stream6_IRQHandler(void) { super("DMA1_Stream6_IRQHandler\n"); }
+void ADC_IRQHandler(void) { super("ADC_IRQHandler\n"); }
+void CAN1_TX_IRQHandler(void) { super("CAN1_TX_IRQHandler\n"); }
+void CAN1_RX0_IRQHandler(void) { super("CAN1_RX0_IRQHandler\n"); }
+void CAN1_RX1_IRQHandler(void) { super("CAN1_RX1_IRQHandler\n"); }
+void CAN1_SCE_IRQHandler(void) { super("CAN1_SCE_IRQHandler\n"); }
+void EXTI9_5_IRQHandler(void) { super("EXTI9_5_IRQHandler\n"); }
+void TIM1_BRK_TIM9_IRQHandler(void) { super("TIM1_BRK_TIM9_IRQHandler\n"); }
+void TIM1_UP_TIM10_IRQHandler(void) { super("TIM1_UP_TIM10_IRQHandler\n"); }
+void TIM1_TRG_COM_TIM11_IRQHandler(void) { super("TIM1_TRG_COM_TIM11_IRQHandler\n"); }
+void TIM1_CC_IRQHandler(void) { super("TIM1_CC_IRQHandler\n"); }
+void TIM3_IRQHandler(void) { super("TIM3_IRQHandler\n"); }
+void TIM4_IRQHandler(void) { super("TIM4_IRQHandler\n"); }
+void I2C1_EV_IRQHandler(void) { super("I2C1_EV_IRQHandler\n"); }
+void I2C1_ER_IRQHandler(void) { super("I2C1_ER_IRQHandler\n"); }
+void I2C2_EV_IRQHandler(void) { super("I2C2_EV_IRQHandler\n"); }
+void I2C2_ER_IRQHandler(void) { super("I2C2_ER_IRQHandler\n"); }
+void SPI1_IRQHandler(void) { super("SPI1_IRQHandler\n"); }
+void SPI2_IRQHandler(void) { super("SPI2_IRQHandler\n"); }
+void USART1_IRQHandler(void) { super("USART1_IRQHandler\n"); }
+void USART2_IRQHandler(void) { super("USART2_IRQHandler\n"); }
+void USART3_IRQHandler(void) { super("USART3_IRQHandler\n"); }
+void EXTI15_10_IRQHandler(void) { super("EXTI15_10_IRQHandler\n"); }
+void RTC_Alarm_IRQHandler(void) { super("RTC_Alarm_IRQHandler\n"); }
+void OTG_FS_WKUP_IRQHandler(void) { super("OTG_FS_WKUP_IRQHandler\n"); }
+void TIM8_BRK_TIM12_IRQHandler(void) { super("TIM8_BRK_TIM12_IRQHandler\n"); }
+void TIM8_UP_TIM13_IRQHandler(void) { super("TIM8_UP_TIM13_IRQHandler\n"); }
+void TIM8_TRG_COM_TIM14_IRQHandler(void) { super("TIM8_TRG_COM_TIM14_IRQHandler\n"); }
+void TIM8_CC_IRQHandler(void) { super("TIM8_CC_IRQHandler\n"); }
+void DMA1_Stream7_IRQHandler(void) { super("DMA1_Stream7_IRQHandler\n"); }
+void FSMC_IRQHandler(void) { super("FSMC_IRQHandler\n"); }
+void SDIO_IRQHandler(void) { super("SDIO_IRQHandler\n"); }
+void SPI3_IRQHandler(void) { super("SPI3_IRQHandler\n"); }
+
+
+
+
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
