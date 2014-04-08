@@ -1463,6 +1463,9 @@ void RCC_AHB1PeriphClockCmd(uint32_t RCC_AHB1Periph, FunctionalState NewState)
   assert_param(IS_RCC_AHB1_CLOCK_PERIPH(RCC_AHB1Periph));
 
   assert_param(IS_FUNCTIONAL_STATE(NewState));
+  
+  clockupdate_log(RCC_AHB1_BUS, RCC_AHB1Periph, NewState);
+
   if (NewState != DISABLE)
   {
     RCC->AHB1ENR |= RCC_AHB1Periph;
@@ -1495,6 +1498,8 @@ void RCC_AHB2PeriphClockCmd(uint32_t RCC_AHB2Periph, FunctionalState NewState)
   assert_param(IS_RCC_AHB2_PERIPH(RCC_AHB2Periph));
   assert_param(IS_FUNCTIONAL_STATE(NewState));
 
+  clockupdate_log(RCC_AHB2_BUS, RCC_AHB2Periph, NewState);
+
   if (NewState != DISABLE)
   {
     RCC->AHB2ENR |= RCC_AHB2Periph;
@@ -1522,6 +1527,8 @@ void RCC_AHB3PeriphClockCmd(uint32_t RCC_AHB3Periph, FunctionalState NewState)
   /* Check the parameters */
   assert_param(IS_RCC_AHB3_PERIPH(RCC_AHB3Periph));  
   assert_param(IS_FUNCTIONAL_STATE(NewState));
+
+  clockupdate_log(RCC_AHB3_BUS, RCC_AHB3Periph, NewState);
 
   if (NewState != DISABLE)
   {
@@ -1575,6 +1582,9 @@ void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState)
   assert_param(IS_RCC_APB1_PERIPH(RCC_APB1Periph));  
   assert_param(IS_FUNCTIONAL_STATE(NewState));
 
+
+  clockupdate_log(RCC_APB1_BUS, RCC_APB1Periph, NewState);
+
   if (NewState != DISABLE)
   {
     RCC->APB1ENR |= RCC_APB1Periph;
@@ -1619,6 +1629,8 @@ void RCC_APB2PeriphClockCmd(uint32_t RCC_APB2Periph, FunctionalState NewState)
   /* Check the parameters */
   assert_param(IS_RCC_APB2_PERIPH(RCC_APB2Periph));
   assert_param(IS_FUNCTIONAL_STATE(NewState));
+
+  clockupdate_log(RCC_APB2_BUS, RCC_APB2Periph, NewState);
 
   if (NewState != DISABLE)
   {

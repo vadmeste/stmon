@@ -53,6 +53,10 @@ typedef struct
   uint32_t PCLK2_Frequency;  /*!<  PCLK2 clock frequency expressed in Hz  */
 }RCC_ClocksTypeDef;
 
+typedef enum
+{ RCC_AHB1_BUS, RCC_AHB2_BUS, RCC_AHB3_BUS, RCC_APB1_BUS, RCC_APB2_BUS
+    } RCC_BUS_TYPE;
+
 /* Exported constants --------------------------------------------------------*/
 
 /** @defgroup RCC_Exported_Constants
