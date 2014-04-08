@@ -148,11 +148,12 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-
-if(demo_mode == 0)
-  xPortSysTickHandler();
-else  
-  TimingDelay_Decrement();
+    
+    log_append("docea_monitoring systick event\n");
+    if(demo_mode == 0)
+        xPortSysTickHandler();
+    else  
+        TimingDelay_Decrement();
 }
 
 /**
