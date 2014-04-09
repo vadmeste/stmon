@@ -996,10 +996,10 @@ int Main_Task(void * pvParameters) {
 	{
 		/* Host Task handler */
 		USBH_Process(&USB_OTG_Core, &USB_Host);
-		USB_OTG_BSP_mDelay(25);
+		vTaskDelay(10);
 		// Routine_MEMS();
 		// log_append("docea_monitoring cpu_state sleep\n");
-		__WFI(); 
+		// __WFI(); 
 	}
 }
 
