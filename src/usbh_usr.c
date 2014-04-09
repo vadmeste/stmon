@@ -514,7 +514,7 @@ int USBH_USR_MSC_Application(void)
     GUI_SelectLayer(1);  
 
 
-    USBH_USR_ApplicationState = USH_USR_FS_DRAW;
+    USBH_USR_ApplicationState = USH_USR_FS_READVIDEO;
     break;
   
   case USH_USR_FS_READVIDEO:
