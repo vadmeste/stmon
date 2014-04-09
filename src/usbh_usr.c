@@ -580,6 +580,8 @@ int USBH_USR_MSC_Application(void)
     
     /* Register work area for logical drives */
     f_mount(0, &fatfs);
+
+    USB_OTG_BSP_uDelay(100000);
     
     if(f_open(&file, "0:STM32.TXT",FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
     { 
