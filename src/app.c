@@ -1028,7 +1028,7 @@ int main(void)
     RTC_TimeRegulate();
 //  }
     
-    cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x400000);
+    cbInit(&g_LogCB, 0xD0000000 + 0x400000, 0x3F0000);
 	g_LogCB_enable = 1;
 	
 	log_append("Start application\n");
