@@ -294,7 +294,12 @@ __attribute__( ( always_inline ) ) static __INLINE void __WFI(void)
  */
 __attribute__( ( always_inline ) ) static __INLINE void __WFE(void)
 {
+   __ASM volatile ("cpsid i");
+  dirty_log_append("docea_monitoring cpu_state sleep\n", 1);
   __ASM volatile ("wfe");
+  dirty_log_append("docea_monitoring cpu_state wakeup\n", 1);
+  __ASM volatile ("cpsie i");
+
 }
 
 
