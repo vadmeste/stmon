@@ -39,6 +39,13 @@
 //#define RTC_CLOCK_SOURCE_LSI
 extern uint8_t RTC_HandlerFlag;
 extern int8_t  RTC_Error;
+
+RTC_InitTypeDef RTC_InitStructure;
+RTC_TimeTypeDef RTC_TimeStructure;
+RTC_DateTypeDef RTC_DateStructure;
+RTC_TimeTypeDef RTC_TimeStampStructure;
+RTC_DateTypeDef RTC_TimeStampDateStructure;
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 int8_t RTC_Configuration(void);

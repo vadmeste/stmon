@@ -33,7 +33,10 @@
 #include "usbh_msc_core.h"
 #include "usbh_msc_scsi.h"
 #include "usbh_msc_bot.h"
+
+
 #include "cbuf.h"
+#include "docea_log.h"
 
 #include "global_includes.h"
 #include "Global.h"
@@ -77,10 +80,8 @@
 */ 
 extern USB_OTG_CORE_HANDLE          USB_OTG_Core;
 extern USBH_HOST USB_Host;
-extern CircularBuffer g_LogCB;
 extern uint32_t g_dma_enable;
 extern uint32_t g_init_usb_core;
-extern uint8_t g_LogCB_enable;
 /**
 * @}
 */ 
