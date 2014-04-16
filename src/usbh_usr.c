@@ -514,7 +514,7 @@ int USBH_USR_MSC_Application(void)
     GUI_SelectLayer(1);  
 
 
-    USBH_USR_ApplicationState = USH_USR_FS_READVIDEO;
+    USBH_USR_ApplicationState = USH_USR_FS_DRAW;
     break;
   
   case USH_USR_FS_READVIDEO:
@@ -828,7 +828,7 @@ uint32_t Storage_OpenReadFile(uint32_t Address)
   uint32_t index = 0, size = 0, i1 = 0;
   uint32_t BmpAddress;
 
-  f_read(&file, &Image_Buf, 30, 0);
+  f_read(&file, &Image_Buf, 30,  (UINT *)&BytesRead);
   BmpAddress = (uint32_t)Image_Buf;
 
   /* Read bitmap size */
