@@ -379,9 +379,9 @@ void SetSysClock(void)
   }
 #endif /*PLL_SOURCE_HSI*/
   
-      /* Select regulator voltage output Scale 1 mode, System frequency up to 180 MHz */
+    /* Select regulator voltage output Scale 1 mode, System frequency up to 180 MHz */
     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-    PWR->CR |= PWR_CR_VOS;
+    PWR->CR &= ~PWR_CR_VOS | VOS_LEVEL;
 
     /* HCLK = SYSCLK / 1*/
     RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
