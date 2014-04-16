@@ -208,14 +208,6 @@ void gui_init() {
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
-
-	/* Setup SysTick Timer for 1 msec interrupts.*/
-	if (SysTick_Config(SystemCoreClock / 1000))
-	{ 
-		/* Capture error */ 
-		while (1);
-	}
-
 	/* Enable the BUTTON Clock */
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
