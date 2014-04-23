@@ -31,8 +31,12 @@ void log_append(char *fmt, ...);
 void dirty_log_append(char* fmt, ...);
 void log_raw_append(char* fmt, ...);
 void dirty_log_raw_append(char* fmt, ...);
-void clockupdate_log(RCC_BUS_TYPE bus, uint32_t periph, FunctionalState newstate);
 void print_log();
+
+void clockupdate_log(RCC_BUS_TYPE bus, uint32_t periph, FunctionalState newstate);
+void gpio_af_config_log(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF);
+void print_default_gpios();
+
 
 
 #endif

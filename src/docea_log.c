@@ -1,5 +1,6 @@
 
 #include "docea_log.h"
+#include "gpio_aflist.h"
 
 /**
  ** @brief  Returns the current time and sub second.
@@ -245,6 +246,90 @@ dirty_log_raw_append(char* fmt, ...) {
     va_start(va, fmt);
     do_log_append(fmt, 0, va);
     va_end(va);
+}
+
+      
+const char* af_list[] = { "RTC_50Hz/MCO/TAMPER/SWJ/TRACE",
+    "TIM1/TIM2", 
+    "TIM3/TIM4/TIM5",
+    "TIM6/TIM8/TIM9/TIM10/TIM11"
+    "I2C1/I2C2/I2C3", 
+    "SPI1/SPI2/SPI4/SPI5/SPI6", 
+    "SAI1/SPI3", 
+    "I2S3ext/USART1/USART2/USART3"
+    "UART4/UART5/USART6/UART7/UART8", 
+    "CAN1/CAN2/TIM12/TIM13/TIM14", 
+    "OTG_FS/OTG_HS",
+    "ETH", 
+    "FMC/OTG_HS_FS/SDIO",
+    "DMCI", "LTDC", "EVENTOUT" };
+
+void gpio_af_config_log(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) {
+    
+    char* gpio_name = NULL;
+
+    __disable_irq();
+
+    dirty_log_append("docea_monitoring ");
+
+#define print_gpio_conn(gp) \ 
+    if ( GPIOx == gp) \
+        dirty_log_raw_append("conn GPIO%c%d with %s", \
+            #gp[4], GPIO_PinSource, gpio_aflist[#gp[4] - 'A'][GPIO_PinSource][GPIO_AF]);
+ 
+    print_gpio_conn(GPIOA);
+    print_gpio_conn(GPIOB);
+    print_gpio_conn(GPIOC);
+    print_gpio_conn(GPIOD);
+    print_gpio_conn(GPIOE);
+    print_gpio_conn(GPIOF);
+    print_gpio_conn(GPIOG);
+    print_gpio_conn(GPIOH);
+    print_gpio_conn(GPIOI);
+    print_gpio_conn(GPIOJ);
+    print_gpio_conn(GPIOK);
+
+    dirty_log_raw_append(" ");
+    dirty_log_raw_append("\n"); 
+
+    __enable_irq();
+}
+
+void print_default_gpios() {
+    
+    int i, af_i, af_level, pin;
+
+    __disable_irq();
+
+    dirty_log_append("Already activated PIN config:\n");
+
+#define gpio_current_conf(gp) \
+    for (pin = 0; pin < 15; pin++) { \
+        for (af_level = 0; af_level < 2 ; af_level++) { \
+            for (af_i = 0 ; af_i < 8 ; af_i++) { \
+              if (gp->AFR[af_level] & (1 << af_i)) \
+                  dirty_log_append("[GPIO%c%d(%d,%d) => %s\n", #gp[4], pin, af_level, af_i, gpio_aflist[#gp[4]-'A'][pin][af_level*8+af_i]); \
+            } \
+        } \
+    }
+
+                  // dirty_log_append("GPIO%c, pin = %d, AF = %s", #gp[4], pin, gpio_aflist[#gp[4] - 'A'][pin][af_level*8+i]); 
+    gpio_current_conf(GPIOA);
+    gpio_current_conf(GPIOB);
+    gpio_current_conf(GPIOC);
+    gpio_current_conf(GPIOD);
+    gpio_current_conf(GPIOE);
+    gpio_current_conf(GPIOF);
+    gpio_current_conf(GPIOG);
+    gpio_current_conf(GPIOH);
+    gpio_current_conf(GPIOI);
+    gpio_current_conf(GPIOG);
+    gpio_current_conf(GPIOK);
+
+    dirty_log_raw_append("\n");
+
+   __enable_irq(); 
+
 }
 
 void clockupdate_log(RCC_BUS_TYPE bus, uint32_t periph, FunctionalState newstate) {
