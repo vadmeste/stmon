@@ -246,6 +246,18 @@ void DMA2D_IRQHandler(void)
   DMA2D_ISR_Handler();
 }
 
+void RTC_WKUP_IRQHandler(void)
+{
+    if(RTC_GetITStatus(RTC_IT_WUT) != RESET)
+    {
+        /* Toggle LED4 */
+        STM_EVAL_LEDToggle(LED4);
+        RTC_ClearITPendingBit(RTC_IT_WUT);
+        EXTI_ClearITPendingBit(EXTI_Line22);
+    }
+}
+
+
 static super(char * buf) {
 	log_append(buf);
 }
@@ -254,7 +266,6 @@ static super(char * buf) {
 void WWDG_IRQHandler(void) { super("WWDG_IRQHandler\n"); }
 void PVD_IRQHandler(void) { super("PVD_IRQHandler\n"); }
 void TAMP_STAMP_IRQHandler(void) { super("TAMP_STAMP_IRQHandler\n"); }
-void RTC_WKUP_IRQHandler(void) { super("RTC_WKUP_IRQHandler\n"); }
 void FLASH_IRQHandler(void) { super("FLASH_IRQHandler\n"); }
 void RCC_IRQHandler(void) { super("RCC_IRQHandler\n"); }
 void EXTI1_IRQHandler(void) { super("EXTI1_IRQHandler\n"); }
