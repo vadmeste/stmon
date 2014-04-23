@@ -662,6 +662,9 @@ int main(void)
 	log_append("System clock : %u Hz\n", SystemCoreClock);
 
 
+    print_default_gpios();
+
+
     GPIO_InitTypeDef GPIO_InitStructure;
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
