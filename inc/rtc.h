@@ -34,9 +34,10 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define RTC_CLOCK_SOURCE_LSE
+//#define RTC_CLOCK_SOURCE_LSE
 //#define RTC_CLOCK_SOURCE_HSE
-//#define RTC_CLOCK_SOURCE_LSI
+#define RTC_CLOCK_SOURCE_LSI
+
 extern uint8_t RTC_HandlerFlag;
 extern int8_t  RTC_Error;
 
