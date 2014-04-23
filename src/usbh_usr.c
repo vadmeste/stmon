@@ -674,9 +674,23 @@ int USBH_USR_MSC_Application(void)
     break;
   case USH_USR_FS_NOTHING:
     USBH_USR_ApplicationState = USH_USR_FS_NOTHING;
-    // SystemInit();
-    // while (1) {
-    // }
+
+    // StandbyRTCMode_Measure();
+    // StopMode_Measure();
+
+    int sw = 0;
+    while (1) {
+        if (sw) 
+            SystemInitLQ();
+        else
+            SystemInit();
+
+        SystemCoreClockUpdate();
+
+        sw = !sw;
+        vTaskDelay(1000);
+    }
+
     break;
   default: break;
   }
