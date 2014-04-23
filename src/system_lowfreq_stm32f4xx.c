@@ -114,19 +114,19 @@
 
 // #define PLL_SOURCE_HSI        // HSI (~16 MHz) used to clock the PLL, and the PLL is used as system clock source
 // #define PLL_SOURCE_HSE        // HSE (8MHz) used to clock the PLL, and the PLL is used as system clock source
-#define PLL_SOURCE_HSE_BYPASS   // HSE bypassed with an external clock (8MHz, coming from ST-Link) used to clock
+// #define PLL_SOURCE_HSE_BYPASS   // HSE bypassed with an external clock (8MHz, coming from ST-Link) used to clock
                                 // the PLL, and the PLL is used as system clock source
 
 
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#define PLL_M_LQ      8
-#define PLL_N_LQ      336 // 360
+#define PLL_M_LQ      4
+#define PLL_N_LQ      192
 
 /* SYSCLK = PLL_VCO / PLL_P */
 #define PLL_P_LQ      2
 
 /* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
-#define PLL_Q_LQ      7
+#define PLL_Q_LQ      4
 
 /******************************************************************************/
 
@@ -148,7 +148,7 @@
   * @{
   */
 
-uint32_t SystemCoreClockLQ = 168000000;
+uint32_t SystemCoreClockLQ = 96000000;
 //  uint32_t SystemCoreClockLQ = 180000000;
 
 __I uint8_t AHBPrescTableLQ[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
