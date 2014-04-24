@@ -15,8 +15,8 @@ echof() {
 echof "#ifndef __GPIO_AF_LIST_H"
 echof "#define __GPIO_AF_LIST_H"
 echof ""
-echof "# Data found in "
-echof "#    http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00071990.pdf"
+echof "// Data found in "
+echof "//    http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00071990.pdf"
 echof ""
 
 echof "char* gpio_aflist[][16][16] = {"
