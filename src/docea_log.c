@@ -323,7 +323,7 @@ void print_default_gpios() {
     gpio_current_conf(GPIOG);
     gpio_current_conf(GPIOH);
     gpio_current_conf(GPIOI);
-    gpio_current_conf(GPIOG);
+    gpio_current_conf(GPIOJ);
     gpio_current_conf(GPIOK);
 
     dirty_log_raw_append("\n");
