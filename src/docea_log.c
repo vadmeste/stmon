@@ -298,20 +298,25 @@ void gpio_af_config_log(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GP
 void print_default_gpios() {
     
     int i, af_i, af_level, pin;
+    __IO uint32_t tmp;
+    uint8_t af_val;
 
     __disable_irq();
 
     dirty_log_append("Already activated PIN config:\n");
 
 #define gpio_current_conf(gp) \
-    for (pin = 0; pin < 15; pin++) { \
         for (af_level = 0; af_level < 2 ; af_level++) { \
+            if (gp == GPIOK && af_level > 0) break; \
+            tmp = gp->AFR[af_level]; \
             for (af_i = 0 ; af_i < 8 ; af_i++) { \
-              if (gp->AFR[af_level] & (1 << af_i)) \
-                  dirty_log_append("[GPIO%c%d(%d,%d) => %s\n", #gp[4], pin, af_level, af_i, gpio_aflist[#gp[4]-'A'][pin][af_level*8+af_i]); \
+              pin = af_level*8+af_i; \
+              af_val = tmp & 0xF; \
+              if (af_val != 0) \
+                  dirty_log_append("[GPIO%c%d(%d,%d) => %s\n", #gp[4], pin, af_level, af_i, gpio_aflist[#gp[4]-'A'][pin][af_val]); \
+              tmp = tmp >> 4; \
             } \
-        } \
-    }
+        } 
 
                   // dirty_log_append("GPIO%c, pin = %d, AF = %s", #gp[4], pin, gpio_aflist[#gp[4] - 'A'][pin][af_level*8+i]); 
     gpio_current_conf(GPIOA);
