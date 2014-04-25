@@ -179,17 +179,17 @@ do_log_append(char *fmt, uint8_t show_timestamp, va_list va) {
         RTC_WaitForSynchro();
 
         RTC_GetTime(RTC_Format_BCD, &RTC_TimeStructure);
-        RTC_GetDate(RTC_Format_BCD, &RTC_DateStructure);
+        // RTC_GetDate(RTC_Format_BCD, &RTC_DateStructure);
         ss = RTC_GetSubSecond();
         subs = 100000 - ((uint32_t)((uint32_t)ss * 100000) / (uint32_t) RTC_InitStructure.RTC_SynchPrediv);
 
-        Table_TypeDef date_tbl = RTC_Get_Date_StringTbl(&RTC_DateStructure);
+        // Table_TypeDef date_tbl = RTC_Get_Date_StringTbl(&RTC_DateStructure);
         Table_TypeDef time_tbl = RTC_Get_Time_StringTbl(subs, &RTC_TimeStructure); 
 
         // Put timestamp first
 
-        log_append_datetime(date_tbl, 8);
-        cbWrite(&g_LogCB, &sep);
+        // log_append_datetime(date_tbl, 8);
+        // cbWrite(&g_LogCB, &sep);
         log_append_datetime(time_tbl, 14);
         cbWrite(&g_LogCB, &space);
     }
