@@ -313,7 +313,7 @@ void print_default_gpios() {
               pin = af_level*8+af_i; \
               af_val = tmp & 0xF; \
               if (af_val != 0) \
-                  dirty_log_append("[GPIO%c%d(%d,%d) => %s\n", #gp[4], pin, af_level, af_i, gpio_aflist[#gp[4]-'A'][pin][af_val]); \
+                  dirty_log_append("GPIO%c pin %d => %s\n", #gp[4], pin, gpio_aflist[#gp[4]-'A'][pin][af_val]); \
               tmp = tmp >> 4; \
             } \
         } 
@@ -330,8 +330,6 @@ void print_default_gpios() {
     gpio_current_conf(GPIOI);
     gpio_current_conf(GPIOJ);
     gpio_current_conf(GPIOK);
-
-    dirty_log_raw_append("\n");
 
    __enable_irq(); 
 
