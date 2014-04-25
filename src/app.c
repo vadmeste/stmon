@@ -353,8 +353,8 @@ static void RTC_TimeRegulate(void)
 {
     /* Set Time hh:mm:ss */
     RTC_TimeStructure.RTC_H12     = RTC_H12_AM;
-    RTC_TimeStructure.RTC_Hours   = 0x08;  
-    RTC_TimeStructure.RTC_Minutes = 0x10;
+    RTC_TimeStructure.RTC_Hours   = 0x00;  
+    RTC_TimeStructure.RTC_Minutes = 0x00;
     RTC_TimeStructure.RTC_Seconds = 0x00;
     RTC_SetTime(RTC_Format_BCD, &RTC_TimeStructure);
 
