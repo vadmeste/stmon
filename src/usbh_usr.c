@@ -585,7 +585,7 @@ int USBH_USR_MSC_Application(void)
 
     USB_OTG_BSP_uDelay(100000);
     
-    if(f_open(&file, "0:STM32.TXT",FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
+    if(f_open(&file, "0:STM32.LOG",FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
     { 
       /* Write buffer to file */
       bytesToWrite = 0x10; // 0x20000;
