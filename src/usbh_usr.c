@@ -553,6 +553,7 @@ int USBH_USR_MSC_Application(void)
     // LCD_LOG_Init();
 
     
+    log_append("Disable logging. The end.\n");
     g_LogCB_enable = 0;
 
     USB_OTG_BSP_mDelay(100);
