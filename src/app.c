@@ -662,9 +662,12 @@ int main(void)
 	log_append("System clock : %u Hz\n", SystemCoreClock);
 
     RCC_HSEConfig(RCC_HSE_OFF);
+    log_append("HSI = %s; HSE = %s, PLL = %s\n",
+            RCC->CR & 0x1 ? "on" : "off",
+            RCC->CR & 0x8000 ? "on" : "off",
+            RCC->CR & 0x1000000 ? "on" : "off");
 
     print_default_gpios();
-
 
     GPIO_InitTypeDef GPIO_InitStructure;
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
