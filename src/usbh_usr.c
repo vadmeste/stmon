@@ -662,6 +662,13 @@ int USBH_USR_MSC_Application(void)
       } */
       
       LCD_DisplayStringLine(LCD_LINE_15, "> Press User button to continue..\n");
+ 
+      log_append("LCD screen enters sleep mode\n");
+      LCD_WriteCommand(0x10);
+      vTaskDelay(2000);
+      log_append("LCD screen quits sleep mode\n");
+      LCD_WriteCommand(0x11);
+      vTaskDelay(200);
 
       USBH_USR_ApplicationState = USH_USR_FS_READVIDEO;
       return (0);
