@@ -266,6 +266,8 @@ void RCC_HSEConfig(uint8_t RCC_HSE)
   /* Check the parameters */
   assert_param(IS_RCC_HSE(RCC_HSE));
 
+  log_append("%s HSE oscillator\n", RCC_HSE_ON ? "Enabling" : "Disabling");
+  
   /* Reset HSEON and HSEBYP bits before configuring the HSE ------------------*/
   *(__IO uint8_t *) CR_BYTE3_ADDRESS = RCC_HSE_OFF;
 
@@ -356,6 +358,8 @@ void RCC_HSICmd(FunctionalState NewState)
 {
   /* Check the parameters */
   assert_param(IS_FUNCTIONAL_STATE(NewState));
+
+  log_append("%s HSI oscillator\n", NewState == ENABLE ? "Enabling" : "Disabling");
 
   *(__IO uint32_t *) CR_HSION_BB = (uint32_t)NewState;
 }
