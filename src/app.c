@@ -128,7 +128,7 @@ uint32_t init_done = 0;
   * @{
   */ 
 
-#define RTC_CLOCK_SOURCE_LSI
+#define RTC_CLOCK_SOURCE_HSI
 
 RTC_TimeTypeDef RTC_TimeStampStructure;
 RTC_DateTypeDef RTC_TimeStampDateStructure;
@@ -661,6 +661,7 @@ int main(void)
 	log_append("Start application\n");
 	log_append("System clock : %u Hz\n", SystemCoreClock);
 
+    RCC_HSEConfig(RCC_HSE_OFF);
 
     print_default_gpios();
 
