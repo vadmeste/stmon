@@ -82,6 +82,7 @@ extern USB_OTG_CORE_HANDLE          USB_OTG_Core;
 extern USBH_HOST USB_Host;
 extern uint32_t g_dma_enable;
 extern uint32_t g_init_usb_core;
+extern uint8_t g_LogCB_enable;
 /**
 * @}
 */ 
@@ -502,6 +503,7 @@ int USBH_USR_MSC_Application(void)
     // }
     
    
+      g_LogCB_enable = 0;
       while(/* g_init_usb_core < 2 && */ (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
 		      (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
@@ -509,7 +511,8 @@ int USBH_USR_MSC_Application(void)
 	      Toggle_Leds();
 	      // Routine_MEMS();
       } 
-    
+      g_LogCB_enable = 1;
+
     LCD_X_DisplayDriver(1, LCD_X_INITCONTROLLER, NULL);
     GUI_Init();
     GUI_SelectLayer(1);  
@@ -585,6 +588,7 @@ int USBH_USR_MSC_Application(void)
       bytesToWrite = 0x10; // 0x20000;
 //      res= f_write (&file, 0xD0000000 + 0x40000 ,  bytesToWrite, (void *)&bytesWritten);   
      char c; 
+     char color;
       while (!cbIsEmpty(&g_LogCB)) {
         cbRead(&g_LogCB, &c);
         res = f_write(&file, &c, 1, (void *)&bytesWritten); 
@@ -807,11 +811,13 @@ uint8_t Image_Browser (char* path)
           Show_Image();
           // USB_OTG_BSP_mDelay(2000);
           ret = 0;
+          g_LogCB_enable = 0;
           while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
             ( STM_EVAL_PBGetState (BUTTON_USER) != SET  ))
           {
             Toggle_Leds();
           } 
+          g_LogCB_enable = 1;
           f_close(&file);
 	  break;
         }
