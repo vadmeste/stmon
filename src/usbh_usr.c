@@ -556,8 +556,6 @@ int USBH_USR_MSC_Application(void)
     log_append("Disable logging. The end.\n");
     g_LogCB_enable = 0;
 
-    USB_OTG_BSP_mDelay(100);
-
     /*Key B3 in polling*/
 /*    while((HCD_IsDeviceConnected(&USB_OTG_Core)) && \
        (STM_EVAL_PBGetState (BUTTON_USER) != RESET) )          
@@ -566,8 +564,6 @@ int USBH_USR_MSC_Application(void)
     } */
     /* Writes a text file, STM32.TXT in the disk*/
     // LCD_DrawFullRect(0, 0, 240, 320);
-
-    USB_OTG_BSP_mDelay(100);
 
     GUI_DispStringAt("> Saving log....\n", 15, 220);
     // LCD_DisplayStringLine(LCD_LINE_14, "> Saving log..\n");
@@ -583,8 +579,6 @@ int USBH_USR_MSC_Application(void)
     /* Register work area for logical drives */
     f_mount(0, &fatfs);
 
-    USB_OTG_BSP_uDelay(100000);
-    
     if(f_open(&file, "0:STM32.LOG",FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
     { 
       /* Write buffer to file */
