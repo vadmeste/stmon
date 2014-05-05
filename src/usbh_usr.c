@@ -445,7 +445,7 @@ USBH_USR_Status USBH_USR_UserInput(void)
   // if(STM_EVAL_PBGetState(BUTTON_USER) != RESET) 
   // { 
     
-    USB_OTG_BSP_mDelay(500);
+    // USB_OTG_BSP_mDelay(500);
     usbh_usr_status = USBH_USR_RESP_OK;
     
   // }  
@@ -505,7 +505,7 @@ int USBH_USR_MSC_Application(void)
       while(/* g_init_usb_core < 2 && */ (HCD_IsDeviceConnected(&USB_OTG_Core)) && \ 
 		      (STM_EVAL_PBGetState (BUTTON_USER) != SET) )          
       {
-	      USB_OTG_BSP_mDelay(100);
+	      // USB_OTG_BSP_mDelay(100);
 	      Toggle_Leds();
 	      // Routine_MEMS();
       } 
